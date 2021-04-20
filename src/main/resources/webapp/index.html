@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <head>
+        <title>Start Page</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+<body>
+<h1>Wez sie zaloguj</h1>
+<div class="container">
+    <form name="loginForm">
+        <label for="uname"><b>Username</b></label>
+        <input type="text" placeholder="Enter Username" name="username" id="username" value="admin"></br>
+
+        <label for="psw"><b>Password</b></label>
+        <input type="password" placeholder="Enter Password" name="password" id="password" value="admin"></br>
+    </form>
+    <button id='btn' onclick="sendJSON()">Login</button>
+
+</div>
+<div id="msg">
+    <pre></pre>
+</div>
+<script>
+    function sendJSON () {
+        if (document.getElementById("username").value.length !== 0 && document.getElementById("username").value.length !== 0){
+            var user = {
+                username: document.getElementById("username").value,
+                password: document.getElementById("password").value
+            };
+        }
+        else{alert("No weźże uzupełnij pierwyj...");return;}
+        document.forms[0].reset();
+        //for display purposes only
+        console.warn("added" , {user} );
+        let pre = document.querySelector("#msg pre");
+        let data = JSON.stringify(user, '\t', 2);
+        pre.textContent = '\n' + data;
+
+        localStorage.setItem('User', JSON.stringify(user) );
+
+        var xhr = new XMLHttpRequest();
+        var url = "http://localhost:8080/ZTP1/login";
+        xhr.open("POST", url, true);
+        xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+
+        xhr.onreadystatechange = function () {
+            if (xhr.status === 200) {
+                var json = JSON.parse(xhr.responseText);
+                window.location.replace("http://localhost:8080/ZTP1/dashboard.html");
+            }
+            else if(xhr.status === 401){
+                window.location.replace("http://localhost:8080/ZTP1/loginFailed.html");
+            }
+            else if(xhr.status === 500){
+                window.location.replace("http://localhost:8080/ZTP1/exception.html");
+            }
+            else{
+                window.location.replace("http://localhost:8080/ZTP1/otherError.html");
+            }
+        };
+
+        xhr.send(data);
+    };
+</script>
+</body>
+</html>
