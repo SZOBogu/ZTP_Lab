@@ -1,8 +1,8 @@
 package responses;
 
-import databases.BookDatabase;
-import java.util.ArrayList;
-import pojos.Book;
+import entities.BookEntity;
+
+import java.util.List;
 
 /**
  *
@@ -10,9 +10,9 @@ import pojos.Book;
  */
 public class GetBooksResponse {
     private boolean isAdmin;
-    private ArrayList<Book> books;
+    private List<BookEntity> books;
 
-    public GetBooksResponse(boolean isAdmin, ArrayList<Book> books) {
+    public GetBooksResponse(boolean isAdmin, List<BookEntity> books) {
         this.isAdmin = isAdmin;
         this.books = books;
     }
@@ -25,11 +25,11 @@ public class GetBooksResponse {
         this.isAdmin = isAdmin;
     }
 
-    public ArrayList<Book> getBooks() {
+    public List<BookEntity> getBooks() {
         return books;
     }
 
-    public void setBooks(ArrayList<Book> books) {
+    public void setBooks(List<BookEntity> books) {
         this.books = books;
     }
 }

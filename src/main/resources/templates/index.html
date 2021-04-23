@@ -9,13 +9,21 @@
 <h1>Wez sie zaloguj</h1>
 <div class="container">
     <form name="loginForm">
-        <label for="uname"><b>Username</b></label>
+        <label for="username"><b>Username</b></label>
         <input type="text" placeholder="Enter Username" name="username" id="username" value="admin"></br>
 
-        <label for="psw"><b>Password</b></label>
+        <label for="password"><b>Password</b></label>
         <input type="password" placeholder="Enter Password" name="password" id="password" value="admin"></br>
     </form>
     <button id='btn' onclick="sendJSON()">Login</button>
+
+    <a href="home/badlogin"> Bad login</a>
+    <a href="home/error"> Error</a>
+    <a href="login"> Login</a>
+    <a href=""> Go back to home page</a>
+    <a href="dashboard"> Dashboard get</a>
+    <a href="dashboard/dashboard"> Dashboard html</a>
+
 
 </div>
 <div id="msg">
@@ -40,28 +48,28 @@
         localStorage.setItem('User', JSON.stringify(user) );
 
         var xhr = new XMLHttpRequest();
-        var url = "http://localhost:8080/ZTP1/login";
+        var url = "http://localhost:8080/login";
         xhr.open("POST", url, true);
         xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
 
         xhr.onreadystatechange = function () {
-            if (xhr.status === 200) {
+           if (xhr.status === 200) {
                 var json = JSON.parse(xhr.responseText);
-                window.location.replace("http://localhost:8080/ZTP1/dashboard.html");
+                window.location.replace("http://localhost:8080/dashboard/dashboard");
             }
             else if(xhr.status === 401){
-                window.location.replace("http://localhost:8080/ZTP1/loginFailed.html");
+                window.location.replace("http://localhost:8080/badlogin");
             }
             else if(xhr.status === 500){
-                window.location.replace("http://localhost:8080/ZTP1/exception.html");
+                window.location.replace("exception.html");
             }
             else{
-                window.location.replace("http://localhost:8080/ZTP1/otherError.html");
+                window.location.replace("otherError.html");
             }
         };
 
         xhr.send(data);
-    };
+    }
 </script>
 </body>
 </html>
