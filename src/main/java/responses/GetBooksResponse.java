@@ -2,6 +2,7 @@ package responses;
 
 import entities.BookEntity;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -29,7 +30,7 @@ public class GetBooksResponse {
         return books;
     }
 
-    public void setBooks(List<BookEntity> books) {
+    public void setBooks(ArrayList<BookEntity> books) {
         this.books = books;
     }
 }

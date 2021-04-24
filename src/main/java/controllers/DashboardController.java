@@ -3,7 +3,6 @@ package controllers;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import entities.BookEntity;
-import entities.UserEntity;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
@@ -12,11 +11,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import requests.DeleteRequest;
+import org.springframework.web.bind.annotation.*;
 import responses.GetBooksResponse;
 
 import javax.servlet.http.HttpServletRequest;
@@ -28,7 +23,7 @@ import java.util.List;
 public class DashboardController {
     @RequestMapping(value = "/dashboard")
     public String getPage(HttpServletRequest request, Model model){
-        return "dashboard.html";
+        return "dashboard";
     }
 
 
@@ -36,7 +31,6 @@ public class DashboardController {
     public ResponseEntity<String> getBooks(HttpServletRequest request, Model model){
             SessionFactory factory = new Configuration()
                     .addAnnotatedClass(BookEntity.class)
-                    .addAnnotatedClass(UserEntity.class)
                     .buildSessionFactory();
 
             Session session = factory.getCurrentSession();
@@ -60,10 +54,37 @@ public class DashboardController {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                         .body("");
             }
-//        return ResponseEntity.noContent().build();
+    }
+    @GetMapping(value = "/getbook/{id}")
+    public String getBook(@ModelAttribute("book") BookEntity bookEntity, Model model, @PathVariable int id){
+        Gson gson = new Gson();
+        StringBuffer jb = new StringBuffer();
+        String line = null;
+
+        System.out.println("GetBook received request for id: " + id);
+
+        SessionFactory factory = new Configuration()
+                .addAnnotatedClass(BookEntity.class)
+                .buildSessionFactory();
+
+        Session session = factory.getCurrentSession();
+
+        try{
+            session.getTransaction().begin();
+            BookEntity book = session.get(BookEntity.class, id);
+            System.out.println(book);
+            model.addAttribute("book", book);
+            session.close();
+            factory.close();
+
+            return "book";
+        }
+        catch(Exception ex){
+            return "book";
+        }
     }
 
-    @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/addbook", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> addBook(HttpServletRequest request, Model model){
         Gson gson = new Gson();
         StringBuffer jb = new StringBuffer();
@@ -71,7 +92,6 @@ public class DashboardController {
 
         SessionFactory factory = new Configuration()
                 .addAnnotatedClass(BookEntity.class)
-                .addAnnotatedClass(UserEntity.class)
                 .buildSessionFactory();
 
         Session session = factory.getCurrentSession();
@@ -101,32 +121,19 @@ public class DashboardController {
                     .body("");
         }
     }
-    @DeleteMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> removeBook(HttpServletRequest request, Model model){
-        Gson gson = new Gson();
-        StringBuffer jb = new StringBuffer();
-        String line = null;
+    @DeleteMapping(value = "/delete/{id}")
+    public String removeBook(HttpServletRequest request, Model model, @PathVariable int id){
 
         SessionFactory factory = new Configuration()
                 .addAnnotatedClass(BookEntity.class)
-                .addAnnotatedClass(UserEntity.class)
                 .buildSessionFactory();
 
+        System.out.println("Dashboard servlet received DELETE");
         Session session = factory.getCurrentSession();
 
-
         try{
-            System.out.println("Dashboard servlet received DELETE");
-            BufferedReader reader = request.getReader();
-            while ((line = reader.readLine()) != null)
-                jb.append(line);
-
-            String jsonString = jb.toString();
-            DeleteRequest delRequest = gson.fromJson(jsonString, DeleteRequest.class);
-            System.out.println("Delete request index: " + delRequest.getIndex());
-
             session.getTransaction().begin();
-            BookEntity book = session.get(BookEntity.class, delRequest.getIndex());
+            BookEntity book = session.get(BookEntity.class, id);
             session.delete(book);
             session.getTransaction().commit();
             session.close();
@@ -135,8 +142,7 @@ public class DashboardController {
         catch(Exception ex){
             System.out.println("Dashboard servlet received DELETE, exception");
             factory.close();
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body("");
+            return "dashboard";
         }
         return null;
     }

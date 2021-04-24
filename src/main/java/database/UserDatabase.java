@@ -1,44 +1,28 @@
 package database;
 
-import entities.UserEntity;
+import entities.MyUser;
 
 import java.util.ArrayList;
 
 public class UserDatabase {
-    private ArrayList<UserEntity> users;
+    private ArrayList<MyUser> users;
 
     public UserDatabase(){
         this.users = new ArrayList();
     }
 
     public void init(){
-        UserEntity admin = new UserEntity();
-        UserEntity maciek = new UserEntity();
-        UserEntity przemek = new UserEntity();
-        UserEntity domino = new UserEntity();
-
-        admin.setUsername("admin");
-        maciek.setUsername("maciek");
-        przemek.setUsername("pshemo");
-        domino.setUsername("domino");
-
-        admin.setPassword("admin");
-        maciek.setPassword("123");
-        przemek.setPassword("apud");
-        domino.setPassword("jachas");
-
-        admin.setRole("admin");
-        maciek.setRole("user");
-        przemek.setRole("user");
-        domino.setRole("user");
-
+        MyUser admin = new MyUser("admin", "admin", "ADMIN");
+        MyUser maciek = new MyUser("maciek", "123");
+        MyUser przemek = new MyUser("pshemo", "apud");
+        MyUser domino = new MyUser("domino", "jachas");
         this.addUser(admin);
         this.addUser(maciek);
         this.addUser(przemek);
         this.addUser(domino);
     }
 
-    public void addUser(UserEntity user){
+    public void addUser(MyUser user){
         this.users.add(user);
     }
 
@@ -46,12 +30,12 @@ public class UserDatabase {
         this.users.remove(index);
     }
 
-    public ArrayList<UserEntity> getUsers() {
+    public ArrayList<MyUser> getUsers() {
         return users;
     }
 
-    public boolean contains(UserEntity user){
-        for(UserEntity user1 : this.users){
+    public boolean contains(MyUser user){
+        for(MyUser user1 : this.users){
             if(user1.equals(user)){
                 return true;
             }
@@ -61,11 +45,11 @@ public class UserDatabase {
 
     @Override
     public String toString() {
-        String string = "USER DATABASE\n";
-        for(UserEntity user : this.users){
-            string += user.toString() + "\n";
+        StringBuilder string = new StringBuilder("USER DATABASE\n");
+        for(MyUser user : this.users){
+            string.append(user.toString()).append("\n");
         }
-        string += "===============";
-        return string;
+        string.append("===============");
+        return string.toString();
     }
 }

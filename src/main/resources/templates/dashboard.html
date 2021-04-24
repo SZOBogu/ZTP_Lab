@@ -23,11 +23,13 @@
     <form id="deleteForm">
 
     </form>
+    <br>
+    <form id="bookForm">
+
+    </form>
 </div>
 </body>
 <script>
-    var isAdmin = false;
-
     window.onload = function() {
         makeTable();
     };
@@ -37,19 +39,6 @@
             this.title = title;
             this.author = author;
             this.year = year;
-        }
-    }
-
-    class BooklistJSON{
-        constructor(isAdmin, db){
-            this.isAdmin = isAdmin;
-            this.books = db;
-        }
-    }
-
-    class DeleteRequest{
-        constructor(index){
-            this.index = index;
         }
     }
 
@@ -67,9 +56,6 @@
         xhr.send();
 
         var json = JSON.parse(xhr.responseText);
-        if(json["isAdmin"] === true){
-            isAdmin = true;
-        }
         var books = json["books"];
 
         for (var i = 0; i < json["books"].length; i++) {
@@ -80,31 +66,39 @@
             cellAuthor = document.createElement("td");
             cellTitle = document.createElement("td");
             cellYear = document.createElement("td");
+            // cellBookButton = document.createElement("td");
             textId = document.createTextNode(json.books[i].id);
             textAuthor = document.createTextNode(json.books[i].author);
             textTitle = document.createTextNode(json.books[i].title);
             textYear = document.createTextNode(json.books[i].year);
 
+            // bookButton = document.createElement("button");
+            // bookButton.id = "bookButton";
+            // submitButton.addEventListener('click', function () {
+            //     window.location.replace('http://localhost:8080/dashboard/4');
+            // }, false);
+            // bookButton.textContent = "About Book";
+
             cellId.appendChild(textId);
             cellAuthor.append(textAuthor);
             cellTitle.appendChild(textTitle);
             cellYear.appendChild(textYear);
+            // cellBookButton.appendChild(bookButton);
 
             row.appendChild(cellId);
             row.appendChild(cellAuthor);
             row.appendChild(cellTitle);
             row.appendChild(cellYear);
+            // row.appendChild(cellBookButton);
             table.appendChild(row);
         }
-
-        if(isAdmin === true){
             addForm = document.getElementById("addBookForm");
 
             authorInput = document.createElement("input");
             titleInput = document.createElement("input");
             yearInput = document.createElement("input");
 
-            authorLabel= document.createElement("label");
+            authorLabel = document.createElement("label");
             titleLabel = document.createElement("label");
             yearLabel = document.createElement("label");
 
@@ -116,7 +110,6 @@
             titleInput.id = "titleId";
             yearInput.id = "yearId";
 
-
             textAuthor = document.createTextNode("Author");
             textTitle = document.createTextNode("Title");
             textYear = document.createTextNode("Year");
@@ -127,7 +120,7 @@
 
             submitButton = document.createElement("button");
             submitButton.id = "addButton";
-            submitButton.addEventListener('click', function() {
+            submitButton.addEventListener('click', function () {
                 addBook(document.getElementById("authorId").value,
                     document.getElementById("titleId").value,
                     document.getElementById("yearId").value);
@@ -169,31 +162,86 @@
             document.getElementsByTagName("body")[0].appendChild(deleteForm);
 //                let pre = document.querySelector("#msg pre");
 //                pre.textContent = '\n' + i;
-        }
+            //EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE
+            bookForm = document.getElementById("bookForm");
+            bookLabel = document.createElement("label");
+            bookInput = document.createElement("input");
+            bookButton = document.createElement("button");
+
+            bookInput.type = "number";
+
+            bookLabel.id = "bookLabel";
+            bookInput.id = "bookInput";
+            bookButton.id = "bookButton";
+
+            bookLabel.textContent = "Enter index of Book you want to look at\n";
+            bookButton.textContent = "Get Book";
+
+            bookButton.addEventListener('click', function() {
+                getBook(document.getElementById("bookInput").value);
+            }, false);
+
+            bookForm.appendChild(bookLabel);
+            bookForm.appendChild(bookInput);
+            bookForm.appendChild(bookButton);
+            document.getElementsByTagName("body")[0].appendChild(bookForm);
     }
 
     function deleteBook(i) {
         var xhr = new XMLHttpRequest();
-        var url = "http://localhost:8080/dashboard";
+        var url = "http://localhost:8080/dashboard/delete/" + i;
         xhr.open("DELETE", url, true);
-        xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-        var index = null;
-        console.log(document.getElementsByTagName("button").length);
-
-        var delRequest = new DeleteRequest(i);
-        let data = JSON.stringify(delRequest, '\t', 2);
-        xhr.send(data);
+        xhr.send(null);
     }
 
     function addBook(author, title, year) {
         var book = new Book(title, author, year);
 
         var xhr = new XMLHttpRequest();
-        var url = "http://localhost:8080/dashboard";
+        var url = "http://localhost:8080/dashboard/addbook";
         xhr.open("POST", url, true);
         xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
 
         xhr.send(JSON.stringify(book));
     }
+
+    function getBook(i){
+        var xhr = new XMLHttpRequest();
+        url = "http://localhost:8080/dashboard/getbook/" + i;
+        xhr.open("GET", url, false);
+
+        xhr.onreadystatechange = function () {
+             document.querySelector('html').innerHTML = xhr.responseText;
+           // window.location.replace(url);
+        }
+        // var xhr = new XMLHttpRequest();
+        //var url = "http://localhost:8080/dashboard/4";
+        // xhr.open("GET", url, true);
+        // xhr.send(null);
+        xhr.send(null)
+        // window.location.replace(url);
+    }
+
+    // function url_redirect(url){
+    //     var X = setTimeout(function(){
+    //         window.location.replace(url);
+    //         return true;
+    //     },300);
+    //
+    //     if( window.location = url ){
+    //         clearTimeout(X);
+    //         return true;
+    //     } else {
+    //         if( window.location.href = url ){
+    //             clearTimeout(X);
+    //             return true;
+    //         }else{
+    //             clearTimeout(X);
+    //             window.location.replace(url);
+    //             return true;
+    //         }
+    //     }
+    //     return false;
+    // };
 </script>
 </html>
