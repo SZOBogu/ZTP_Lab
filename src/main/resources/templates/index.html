@@ -9,31 +9,13 @@
 <body>
 <h1>Wez sie zaloguj</h1>
 <div class="container">
-    <form name="loginForm">
-        <label for="username"><b>Username</b></label>
-        <input type="text" placeholder="Enter Username" name="username" id="username" value="admin"></br>
-
-        <label for="password"><b>Password</b></label>
-        <input type="password" placeholder="Enter Password" name="password" id="password" value="admin"></br>
-    </form>
-    <button id='btn' onclick="sendJSON()">Login</button>
-
-    <a href="home/badlogin"> Bad login</a>
-    <a href="home/error"> Error</a>
-    <a href="login"> Login</a>
-    <a href=""> Go back to home page</a>
-    <a href="dashboard"> Dashboard get</a>
-    <a href="dashboard/dashboard"> Dashboard html</a>
-
-
+    <a href="dashboard/dashboard"> Click me</a>
 </div>
 <div id="msg">
     <pre></pre>
 </div>
 <script>
-    function sendJSON () {
-        window.location.replace("http://localhost:8080/dashboard/dashboard");
-    }
+       window.onload = window.location.replace("http://localhost:8080/dashboard/dashboard");
 </script>
 </body>
 </html>

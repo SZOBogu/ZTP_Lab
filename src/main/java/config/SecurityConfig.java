@@ -8,14 +8,12 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import services.UserService;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
-
-//    @Resource
-//    private UserDetailsService userDetailsService = new UserService();
 
     @Bean
     public AuthenticationProvider authProvider() {
@@ -25,12 +23,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return authProvider;
     }
 
-//    @Autowired
-//    protected void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-//        auth.userDetailsService(new UserService());
-//    }
-
-//    @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .cors().disable()
@@ -40,7 +32,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/dashboard/addbook", "/dashboard/delete/**").hasRole("ADMIN")
                 .antMatchers("/dashboard/dashboard", "/dashboard", "/dashboard/getbook/**", "/dashboard/getbooklink/**").hasAnyRole("USER", "ADMIN")
                 .anyRequest().authenticated()
-                .and().httpBasic();
+                    .and()
+                .httpBasic()
+                    .and()
+                .logout()
+                    .clearAuthentication(true)
+                    .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
+                    .logoutSuccessUrl("/")
+                    .deleteCookies("JSESSIONID")
+                    .invalidateHttpSession(true);
     }
 
     @SuppressWarnings("deprecation")

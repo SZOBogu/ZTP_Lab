@@ -42,6 +42,10 @@
         }
     }
 
+    function clearTable(){
+        document.getElementById(elementID).innerHTML = "";
+    }
+
     function makeTable( ) {
         var body = document.getElementsByTagName("body")[0];
         var tbl = document.createElement("table");
@@ -71,13 +75,6 @@
             textAuthor = document.createTextNode(json.books[i].author);
             textTitle = document.createTextNode(json.books[i].title);
             textYear = document.createTextNode(json.books[i].year);
-
-            // bookButton = document.createElement("button");
-            // bookButton.id = "bookButton";
-            // submitButton.addEventListener('click', function () {
-            //     window.location.replace('http://localhost:8080/dashboard/4');
-            // }, false);
-            // bookButton.textContent = "About Book";
 
             cellId.appendChild(textId);
             cellAuthor.append(textAuthor);
@@ -160,8 +157,6 @@
             deleteForm.appendChild(deleteInput);
             deleteForm.appendChild(deleteButton);
             document.getElementsByTagName("body")[0].appendChild(deleteForm);
-//                let pre = document.querySelector("#msg pre");
-//                pre.textContent = '\n' + i;
             //EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE
             bookForm = document.getElementById("bookForm");
             bookLabel = document.createElement("label");
@@ -192,6 +187,8 @@
         var url = "http://localhost:8080/dashboard/delete/" + i;
         xhr.open("DELETE", url, true);
         xhr.send(null);
+        clearTable();
+        makeTable();
     }
 
     function addBook(author, title, year) {
@@ -203,6 +200,8 @@
         xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
 
         xhr.send(JSON.stringify(book));
+        clearTable();
+        makeTable();
     }
 
     function getBook(i){
@@ -212,36 +211,8 @@
 
         xhr.onreadystatechange = function () {
              document.querySelector('html').innerHTML = xhr.responseText;
-           // window.location.replace(url);
         }
-        // var xhr = new XMLHttpRequest();
-        //var url = "http://localhost:8080/dashboard/4";
-        // xhr.open("GET", url, true);
-        // xhr.send(null);
         xhr.send(null)
-        // window.location.replace(url);
     }
-
-    // function url_redirect(url){
-    //     var X = setTimeout(function(){
-    //         window.location.replace(url);
-    //         return true;
-    //     },300);
-    //
-    //     if( window.location = url ){
-    //         clearTimeout(X);
-    //         return true;
-    //     } else {
-    //         if( window.location.href = url ){
-    //             clearTimeout(X);
-    //             return true;
-    //         }else{
-    //             clearTimeout(X);
-    //             window.location.replace(url);
-    //             return true;
-    //         }
-    //     }
-    //     return false;
-    // };
 </script>
 </html>
