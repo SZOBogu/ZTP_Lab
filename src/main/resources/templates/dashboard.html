@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>TODO supply a title</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body onload="makeTable()">
+<h1> dashboard </h1>
+<div id="msg">
+    <pre></pre>
+</div>
+
+<table id="dashboardTable">
+
+</table>
+
+<div id="formDiv">
+    <form id="addBookForm">
+
+    </form>
+    <br>
+    <form id="deleteForm">
+
+    </form>
+    <br>
+    <form id="bookForm">
+
+    </form>
+
+    <button onclick="logout()">Logout</button>
+</div>
+</body>
+<script>
+    window.onload = function() {
+        makeTable();
+    };
+
+    class Book{
+        constructor(title, author, year){
+            this.title = title;
+            this.author = author;
+            this.year = year;
+        }
+    }
+
+    function clearTable(){
+        document.getElementById(elementID).innerHTML = "";
+    }
+
+    function makeTable( ) {
+        var body = document.getElementsByTagName("body")[0];
+        var tbl = document.createElement("table");
+        tbl.style.width = "100%";
+        tbl.setAttribute("border", "1");
+        var tbdy = document.createElement("tbody");
+
+        var xhr = new XMLHttpRequest();
+        var url = "http://localhost:8080/dashboard";
+        xhr.open("GET", url, false);
+        xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+        xhr.send();
+
+        var json = JSON.parse(xhr.responseText);
+        var books = json["books"];
+
+        for (var i = 0; i < json["books"].length; i++) {
+
+            table = document.getElementById("dashboardTable");
+            row = document.createElement("tr");
+            cellId = document.createElement("td");
+            cellAuthor = document.createElement("td");
+            cellTitle = document.createElement("td");
+            cellYear = document.createElement("td");
+            // cellBookButton = document.createElement("td");
+            textId = document.createTextNode(json.books[i].id);
+            textAuthor = document.createTextNode(json.books[i].author);
+            textTitle = document.createTextNode(json.books[i].title);
+            textYear = document.createTextNode(json.books[i].year);
+
+            cellId.appendChild(textId);
+            cellAuthor.append(textAuthor);
+            cellTitle.appendChild(textTitle);
+            cellYear.appendChild(textYear);
+            // cellBookButton.appendChild(bookButton);
+
+            row.appendChild(cellId);
+            row.appendChild(cellAuthor);
+            row.appendChild(cellTitle);
+            row.appendChild(cellYear);
+            // row.appendChild(cellBookButton);
+            table.appendChild(row);
+        }
+            addForm = document.getElementById("addBookForm");
+
+            authorInput = document.createElement("input");
+            titleInput = document.createElement("input");
+            yearInput = document.createElement("input");
+
+            authorLabel = document.createElement("label");
+            titleLabel = document.createElement("label");
+            yearLabel = document.createElement("label");
+
+            authorInput.type = "text";
+            titleInput.type = "text";
+            yearInput.type = "number";
+
+            authorInput.id = "authorId";
+            titleInput.id = "titleId";
+            yearInput.id = "yearId";
+
+            textAuthor = document.createTextNode("Author");
+            textTitle = document.createTextNode("Title");
+            textYear = document.createTextNode("Year");
+
+            authorLabel.appendChild(textAuthor);
+            titleLabel.appendChild(textTitle);
+            yearLabel.appendChild(textYear);
+
+            submitButton = document.createElement("button");
+            submitButton.id = "addButton";
+            submitButton.addEventListener('click', function () {
+                addBook(document.getElementById("authorId").value,
+                    document.getElementById("titleId").value,
+                    document.getElementById("yearId").value);
+            }, false);
+            submitButton.textContent = "Add Book";
+
+            addForm.appendChild(authorLabel);
+            addForm.appendChild(authorInput);
+            addForm.appendChild(titleLabel);
+            addForm.appendChild(titleInput);
+            addForm.appendChild(yearLabel);
+            addForm.appendChild(yearInput);
+            addForm.appendChild(submitButton);
+
+            document.getElementsByTagName("body")[0].appendChild(addForm);
+
+            //AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+            deleteForm = document.getElementById("deleteForm");
+            deleteLabel = document.createElement("label");
+            deleteInput = document.createElement("input");
+            deleteButton = document.createElement("button");
+
+            deleteInput.type = "number";
+
+            deleteLabel.id = "deleteLabel";
+            deleteInput.id = "deleteInput";
+            deleteButton.id = "deleteButton";
+
+            deleteLabel.textContent = "Enter index of Book you want to delete\n";
+            deleteButton.textContent = "Delete";
+
+            deleteButton.addEventListener('click', function() {
+                deleteBook(document.getElementById("deleteInput").value);
+            }, false);
+
+            deleteForm.appendChild(deleteLabel);
+            deleteForm.appendChild(deleteInput);
+            deleteForm.appendChild(deleteButton);
+            document.getElementsByTagName("body")[0].appendChild(deleteForm);
+            //EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE
+            bookForm = document.getElementById("bookForm");
+            bookLabel = document.createElement("label");
+            bookInput = document.createElement("input");
+            bookButton = document.createElement("button");
+
+            bookInput.type = "number";
+
+            bookLabel.id = "bookLabel";
+            bookInput.id = "bookInput";
+            bookButton.id = "bookButton";
+
+            bookLabel.textContent = "Enter index of Book you want to look at\n";
+            bookButton.textContent = "Get Book";
+
+            bookButton.addEventListener('click', function() {
+                getBook(document.getElementById("bookInput").value);
+            }, false);
+
+            bookForm.appendChild(bookLabel);
+            bookForm.appendChild(bookInput);
+            bookForm.appendChild(bookButton);
+            document.getElementsByTagName("body")[0].appendChild(bookForm);
+    }
+
+    function deleteBook(i) {
+        var xhr = new XMLHttpRequest();
+        var url = "http://localhost:8080/dashboard/delete/" + i;
+        xhr.open("DELETE", url, true);
+        xhr.send(null);
+        clearTable();
+        makeTable();
+    }
+
+    function addBook(author, title, year) {
+        var book = new Book(title, author, year);
+
+        var xhr = new XMLHttpRequest();
+        var url = "http://localhost:8080/dashboard/addbook";
+        xhr.open("POST", url, true);
+        xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+
+        xhr.send(JSON.stringify(book));
+        clearTable();
+        makeTable();
+    }
+
+    function getBook(i){
+        var xhr = new XMLHttpRequest();
+        url = "http://localhost:8080/dashboard/getbook/" + i;
+        xhr.open("GET", url, false);
+
+        xhr.onreadystatechange = function () {
+             document.querySelector('html').innerHTML = xhr.responseText;
+        }
+        xhr.send(null)
+    }
+
+    function logout(){
+        var xhr = new XMLHttpRequest();
+        url = "http://localhost:8080/logout";
+        xhr.open("POST", url, false);
+
+        xhr.onreadystatechange = function () {
+            window.location.replace('/logout');
+        }
+        xhr.send(null)
+    }
+</script>
+</html>

@@ -1,0 +1,18 @@
+
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org">
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Person shown</title>
+</head>
+<body>
+<b th:text="${book.title}"/> is the title of the book<br>
+Its authors name is: <b th:text="${book.author}"/><br>
+It was released in <b th:text="${book.year}"/><br>
+In database its id should be: <b th:text="${book.id}"/><br>
+
+<a href="/"> Go back to home page</a>
+<a href="/dashboard/dashboard"> Go back to dashboard</a>
+</body>
+</html>
