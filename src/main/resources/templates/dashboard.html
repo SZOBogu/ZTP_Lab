@@ -27,6 +27,8 @@
     <form id="bookForm">
 
     </form>
+
+    <button onclick="logout()">Logout</button>
 </div>
 </body>
 <script>
@@ -211,6 +213,17 @@
 
         xhr.onreadystatechange = function () {
              document.querySelector('html').innerHTML = xhr.responseText;
+        }
+        xhr.send(null)
+    }
+
+    function logout(){
+        var xhr = new XMLHttpRequest();
+        url = "http://localhost:8080/logout";
+        xhr.open("POST", url, false);
+
+        xhr.onreadystatechange = function () {
+            window.location.replace('/logout');
         }
         xhr.send(null)
     }

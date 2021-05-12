@@ -7,6 +7,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Objects;
+
 /**
  *
  * @author root
@@ -87,29 +88,15 @@ public class MyUser implements UserDetails {
     }
 
     @Override
-    public int hashCode() {
-        int hash = 5;
-        return hash;
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        MyUser myUser = (MyUser) o;
+        return Objects.equals(username, myUser.username) && Objects.equals(password, myUser.password) && Objects.equals(role, myUser.role);
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final MyUser other = (MyUser) obj;
-        if (!Objects.equals(this.username, other.username)) {
-            return false;
-        }
-        if (!Objects.equals(this.password, other.password)) {
-            return false;
-        }
-        return true;
+    public int hashCode() {
+        return Objects.hash(username, password, role);
     }
 }

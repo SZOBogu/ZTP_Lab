@@ -28,7 +28,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .cors().disable()
                 .csrf().disable()
                 .authorizeRequests()
-                .antMatchers("/", "/home", "/home/**").permitAll()
+                .antMatchers("/", "/home", "/home/**", "/logout", "/logout/***").permitAll()
                 .antMatchers("/dashboard/addbook", "/dashboard/delete/**").hasRole("ADMIN")
                 .antMatchers("/dashboard/dashboard", "/dashboard", "/dashboard/getbook/**", "/dashboard/getbooklink/**").hasAnyRole("USER", "ADMIN")
                 .anyRequest().authenticated()
@@ -38,7 +38,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .logout()
                     .clearAuthentication(true)
                     .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
-                    .logoutSuccessUrl("/")
+                    .logoutSuccessUrl("/logout/logout")
                     .deleteCookies("JSESSIONID")
                     .invalidateHttpSession(true);
     }
