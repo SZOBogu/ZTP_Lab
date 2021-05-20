@@ -29,7 +29,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .csrf().disable()
                 .authorizeRequests()
                 .antMatchers("/", "/home", "/home/**").permitAll()
-                .antMatchers("/dashboard/addbook", "/dashboard/delete/**").hasRole("ADMIN")
+                .antMatchers("/dashboard/addbook", "/dashboard/delete/**",  "/dashboard/delete").hasRole("ADMIN")
                 .antMatchers("/dashboard/dashboard", "/dashboard", "/dashboard/getbook/**", "/dashboard/getbooklink/**", "/logout", "/logout/***").hasAnyRole("USER", "ADMIN")
                 .anyRequest().authenticated()
                     .and()
