@@ -11,8 +11,8 @@ import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import services.UserService;
 
-@Configuration
 @EnableWebSecurity
+@Configuration
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Bean
@@ -28,9 +28,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .cors().disable()
                 .csrf().disable()
                 .authorizeRequests()
-                .antMatchers("/", "/home", "/home/**", "/logout", "/logout/***").permitAll()
+                .antMatchers("/", "/home", "/home/**").permitAll()
                 .antMatchers("/dashboard/addbook", "/dashboard/delete/**").hasRole("ADMIN")
-                .antMatchers("/dashboard/dashboard", "/dashboard", "/dashboard/getbook/**", "/dashboard/getbooklink/**").hasAnyRole("USER", "ADMIN")
+                .antMatchers("/dashboard/dashboard", "/dashboard", "/dashboard/getbook/**", "/dashboard/getbooklink/**", "/logout", "/logout/***").hasAnyRole("USER", "ADMIN")
                 .anyRequest().authenticated()
                     .and()
                 .httpBasic()
@@ -40,7 +40,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
                     .logoutSuccessUrl("/logout/logout")
                     .deleteCookies("JSESSIONID")
-                    .invalidateHttpSession(true);
+                    .invalidateHttpSession(true)
+                .and()
+                    .cors().disable()
+                    .csrf().disable();
     }
 
     @SuppressWarnings("deprecation")

@@ -28,7 +28,7 @@ public class DashboardController {
 
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> getBooks(HttpServletRequest request, Model model){
+    public ResponseEntity<String> getBooks(){
             SessionFactory factory = new Configuration()
                     .addAnnotatedClass(BookEntity.class)
                     .buildSessionFactory();
@@ -57,10 +57,6 @@ public class DashboardController {
     }
     @GetMapping(value = "/getbook/{id}")
     public String getBook(@ModelAttribute("book") BookEntity bookEntity, Model model, @PathVariable int id){
-        Gson gson = new Gson();
-        StringBuffer jb = new StringBuffer();
-        String line = null;
-
         System.out.println("GetBook received request for id: " + id);
 
         SessionFactory factory = new Configuration()
@@ -85,7 +81,7 @@ public class DashboardController {
     }
 
     @PostMapping(value = "/addbook", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> addBook(HttpServletRequest request, Model model){
+    public ResponseEntity<String> addBook(HttpServletRequest request){
         Gson gson = new Gson();
         StringBuffer jb = new StringBuffer();
         String line = null;
@@ -95,7 +91,6 @@ public class DashboardController {
                 .buildSessionFactory();
 
         Session session = factory.getCurrentSession();
-        List<BookEntity> books;
 
         try{
             System.out.println("Dashboard servlet received POST");
@@ -122,7 +117,7 @@ public class DashboardController {
         }
     }
     @DeleteMapping(value = "/delete/{id}")
-    public String removeBook(HttpServletRequest request, Model model, @PathVariable int id){
+    public String removeBook(@PathVariable int id){
 
         SessionFactory factory = new Configuration()
                 .addAnnotatedClass(BookEntity.class)
