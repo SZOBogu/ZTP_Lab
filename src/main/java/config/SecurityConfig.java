@@ -28,12 +28,16 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .cors().disable()
                 .csrf().disable()
                 .authorizeRequests()
-                .antMatchers("/", "/home", "/home/**").permitAll()
+                .antMatchers("/", "/home", "/home/**", "/login").permitAll()
                 .antMatchers("/dashboard/addbook", "/dashboard/delete/**",  "/dashboard/delete").hasRole("ADMIN")
-                .antMatchers("/dashboard/dashboard", "/dashboard", "/dashboard/getbook/**", "/dashboard/getbooklink/**", "/logout", "/logout/***").hasAnyRole("USER", "ADMIN")
+                .antMatchers("/dashboard/dashboard", "/dashboard", "/dashboard/getbook/**", "/dashboard/getbooklink/**").hasAnyRole("USER", "ADMIN")
                 .anyRequest().authenticated()
                     .and()
-                .httpBasic()
+                .formLogin()
+                    .loginPage("/login")
+                    .loginProcessingUrl("/login")
+                    .defaultSuccessUrl("/dashboard/dashboard", true)
+                    .permitAll()
                     .and()
                 .logout()
                     .clearAuthentication(true)
@@ -41,9 +45,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     .logoutSuccessUrl("/logout/logout")
                     .deleteCookies("JSESSIONID")
                     .invalidateHttpSession(true)
-                .and()
-                    .cors().disable()
-                    .csrf().disable();
+                    .permitAll();
+//                .and()
+//                    .cors().disable()
+//                    .csrf().disable();
     }
 
     @SuppressWarnings("deprecation")
